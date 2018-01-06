@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2018 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -778,6 +778,8 @@ static void RegisterUI(asIScriptEngine* engine)
     engine->RegisterObjectMethod("UI", "const String& get_clipBoardText() const", asMETHOD(UI, GetClipboardText), asCALL_THISCALL);
     engine->RegisterObjectMethod("UI", "void set_doubleClickInterval(float)", asMETHOD(UI, SetDoubleClickInterval), asCALL_THISCALL);
     engine->RegisterObjectMethod("UI", "float get_doubleClickInterval() const", asMETHOD(UI, GetDoubleClickInterval), asCALL_THISCALL);
+    engine->RegisterObjectMethod("UI", "void set_maxDoubleClickDistance(float)", asMETHOD(UI, SetMaxDoubleClickDistance), asCALL_THISCALL);
+    engine->RegisterObjectMethod("UI", "float get_maxDoubleClickDistance() const", asMETHOD(UI, GetMaxDoubleClickDistance), asCALL_THISCALL);
     engine->RegisterObjectMethod("UI", "void set_dragBeginInterval(float)", asMETHOD(UI, SetDragBeginInterval), asCALL_THISCALL);
     engine->RegisterObjectMethod("UI", "float get_dragBeginInterval() const", asMETHOD(UI, GetDragBeginInterval), asCALL_THISCALL);
     engine->RegisterObjectMethod("UI", "void set_dragBeginDistance(int)", asMETHOD(UI, SetDragBeginDistance), asCALL_THISCALL);

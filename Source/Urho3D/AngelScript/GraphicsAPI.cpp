@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2018 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -145,6 +145,7 @@ static void RegisterSkeleton(asIScriptEngine* engine)
     engine->RegisterObjectBehaviour("Bone", asBEHAVE_ADDREF, "void f()", asFUNCTION(FakeAddRef), asCALL_CDECL_OBJLAST);
     engine->RegisterObjectBehaviour("Bone", asBEHAVE_RELEASE, "void f()", asFUNCTION(FakeReleaseRef), asCALL_CDECL_OBJLAST);
     engine->RegisterObjectProperty("Bone", "const String name", offsetof(Bone, name_));
+    engine->RegisterObjectProperty("Bone", "const uint parentIndex", offsetof(Bone, parentIndex_));
     engine->RegisterObjectProperty("Bone", "Vector3 initialPosition", offsetof(Bone, initialPosition_));
     engine->RegisterObjectProperty("Bone", "Quaternion initialRotation", offsetof(Bone, initialRotation_));
     engine->RegisterObjectProperty("Bone", "Vector3 initialScale", offsetof(Bone, initialScale_));
@@ -159,6 +160,8 @@ static void RegisterSkeleton(asIScriptEngine* engine)
     engine->RegisterObjectBehaviour("Skeleton", asBEHAVE_RELEASE, "void f()", asFUNCTION(FakeReleaseRef), asCALL_CDECL_OBJLAST);
     engine->RegisterObjectMethod("Skeleton", "void Reset()", asMETHOD(Skeleton, Reset), asCALL_THISCALL);
     engine->RegisterObjectMethod("Skeleton", "Bone@+ GetBone(const String&in) const", asMETHODPR(Skeleton, GetBone, (const String&), Bone*), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Skeleton", "uint GetBoneIndex(const String&in) const", asMETHODPR(Skeleton, GetBoneIndex, (const String&) const, unsigned), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Skeleton", "Bone@+ GetBoneParent(Bone@+) const", asMETHODPR(Skeleton, GetBoneParent, (const Bone*), Bone*), asCALL_THISCALL);
     engine->RegisterObjectMethod("Skeleton", "Bone@+ get_rootBone() const", asMETHOD(Skeleton, GetRootBone), asCALL_THISCALL);
     engine->RegisterObjectMethod("Skeleton", "uint get_numBones() const", asMETHOD(Skeleton, GetNumBones), asCALL_THISCALL);
     engine->RegisterObjectMethod("Skeleton", "Bone@+ get_bones(uint)", asMETHODPR(Skeleton, GetBone, (unsigned), Bone*), asCALL_THISCALL);
@@ -611,10 +614,10 @@ static CScriptArray* MaterialGetShaderParameterNames(Material* material)
     return VectorToArray<String>(result, "Array<String>");
 }
 
-static TechniqueEntry noTechniqueEntry;
-
 static const TechniqueEntry& MaterialGetTechniqueEntry(unsigned index, Material* ptr)
 {
+    static TechniqueEntry noTechniqueEntry;
+
     if (index >= ptr->GetNumTechniques())
     {
         asGetActiveContext()->SetException("Index out of bounds");
@@ -1315,7 +1318,8 @@ static void RegisterStaticModel(asIScriptEngine* engine)
     engine->RegisterObjectMethod("StaticModel", "Model@+ get_model() const", asMETHOD(StaticModel, GetModel), asCALL_THISCALL);
     engine->RegisterObjectMethod("StaticModel", "void set_material(Material@+)", asMETHODPR(StaticModel, SetMaterial, (Material*), void), asCALL_THISCALL);
     engine->RegisterObjectMethod("StaticModel", "bool set_materials(uint, Material@+)", asMETHODPR(StaticModel, SetMaterial, (unsigned, Material*), bool), asCALL_THISCALL);
-    engine->RegisterObjectMethod("StaticModel", "Material@+ get_materials(uint) const", asMETHOD(StaticModel, GetMaterial), asCALL_THISCALL);
+    engine->RegisterObjectMethod("StaticModel", "Material@+ get_material() const", asMETHODPR(StaticModel, GetMaterial, () const, Material*), asCALL_THISCALL);
+    engine->RegisterObjectMethod("StaticModel", "Material@+ get_materials(uint) const", asMETHODPR(StaticModel, GetMaterial, (unsigned) const, Material*), asCALL_THISCALL);
     engine->RegisterObjectMethod("StaticModel", "uint get_numGeometries() const", asMETHOD(StaticModel, GetNumGeometries), asCALL_THISCALL);
     engine->RegisterObjectMethod("StaticModel", "void set_occlusionLodLevel(uint) const", asMETHOD(StaticModel, SetOcclusionLodLevel), asCALL_THISCALL);
     engine->RegisterObjectMethod("StaticModel", "uint get_occlusionLodLevel() const", asMETHOD(StaticModel, GetOcclusionLodLevel), asCALL_THISCALL);

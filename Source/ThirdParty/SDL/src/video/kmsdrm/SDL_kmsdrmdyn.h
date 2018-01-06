@@ -18,34 +18,36 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+
+#ifndef SDL_kmsdrmdyn_h_
+#define SDL_kmsdrmdyn_h_
+
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_bsdaudio_h
-#define _SDL_bsdaudio_h
+#include <xf86drm.h>
+#include <xf86drmMode.h>
+#include <gbm.h>
 
-#include "../SDL_sysaudio.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define _THIS   SDL_AudioDevice *this
+int SDL_KMSDRM_LoadSymbols(void);
+void SDL_KMSDRM_UnloadSymbols(void);
 
-struct SDL_PrivateAudioData
-{
-    /* The file descriptor for the audio device */
-    int audio_fd;
+/* Declare all the function pointers and wrappers... */
+#define SDL_KMSDRM_SYM(rc,fn,params) \
+    typedef rc (*SDL_DYNKMSDRMFN_##fn) params; \
+    extern SDL_DYNKMSDRMFN_##fn KMSDRM_##fn;
+#define SDL_KMSDRM_SYM_CONST(type, name) \
+    typedef type SDL_DYNKMSDRMCONST_##name; \
+    extern SDL_DYNKMSDRMCONST_##name KMSDRM_##name;
+#include "SDL_kmsdrmsym.h"
 
-    /* The parent process id, to detect when application quits */
-    pid_t parent;
+#ifdef __cplusplus
+}
+#endif
 
-    /* Raw mixing buffer */
-    Uint8 *mixbuf;
-    int mixlen;
-
-    /* Support for audio timing using a timer, in addition to select() */
-    float frame_ticks;
-    float next_frame;
-};
-
-#define FUDGE_TICKS 10      /* The scheduler overhead ticks per frame */
-
-#endif /* _SDL_bsdaudio_h */
+#endif /* SDL_kmsdrmdyn_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

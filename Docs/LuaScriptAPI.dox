@@ -5992,6 +5992,9 @@ Methods:
 - Bone* GetRootBone()
 - Bone* GetBone(const String name)
 - Bone* GetBone(unsigned index)
+- unsigned GetBoneIndex(const String boneName) const
+- unsigned GetBoneIndex(const Bone* bone) const
+- Bone* GetBoneParent(const Bone* bone)
 
 Properties:
 
@@ -6335,7 +6338,8 @@ Methods:
 - void ApplyMaterialList(const String fileName = String::EMPTY)
 - Model* GetModel() const
 - unsigned GetNumGeometries() const
-- Material* GetMaterial(unsigned index = 0) const
+- Material* GetMaterial() const
+- Material* GetMaterial(unsigned index) const
 - unsigned GetOcclusionLodLevel() const
 - bool IsInside(const Vector3& point) const
 - bool IsInsideLocal(const Vector3& point) const
@@ -7070,6 +7074,7 @@ Methods:
 - bool SaveLayout(Serializer& dest, UIElement* element)
 - void SetClipboardText(const String text)
 - void SetDoubleClickInterval(float interval)
+- void SetMaxDoubleClickDistance(float pixels)
 - void SetDragBeginInterval(float interval)
 - void SetDragBeginDistance(int pixels)
 - void SetDefaultToolTipDelay(float delay)
@@ -7098,6 +7103,7 @@ Methods:
 - UIElement* GetDragElement(unsigned index)
 - const String GetClipboardText() const
 - float GetDoubleClickInterval() const
+- float GetMaxDoubleClickDistance() const
 - float GetDragBeginInterval() const
 - int GetDragBeginDistance() const
 - float GetDefaultToolTipDelay() const
@@ -7581,6 +7587,10 @@ Methods:
 - float DotProduct(const Vector3& rhs) const
 - float AbsDotProduct(const Vector3& rhs) const
 - float ProjectOntoAxis(const Vector3& axis) const
+- Vector3 ProjectOntoPlane(const Vector3& origin, const Vector3& normal)
+- Vector3 ProjectOntoLine(const Vector3& from, const Vector3& to, bool clamped = false)
+- float DistanceToPoint(const Vector3& point) const
+- float DistanceToPlane(const Vector3& origin, const Vector3& normal) const
 - Vector3 Orthogonalize(const Vector3& axis) const
 - Vector3 CrossProduct(const Vector3& rhs) const
 - Vector3 Abs() const
@@ -8785,8 +8795,8 @@ Properties:
 - Time* GetTime()
 - long GetTotalMemory()
 - UI* GetUI()
-- bool HasSubscribedToEvent(const String eventName)
 - bool HasSubscribedToEvent(Object* sender, const String eventName)
+- bool HasSubscribedToEvent(const String eventName)
 - float InverseLerp(float lhs, float rhs, float x)
 - bool IsAbsolutePath(const String pathName)
 - bool IsAlpha(unsigned ch)
@@ -8805,11 +8815,12 @@ Properties:
 - void OpenConsoleWindow()
 - float Pow(float x, float y)
 - void PrintLine(const String str, bool error = false)
+- void PrintLine(const char* str, bool error = false)
 - int Rand()
 - float RandStandardNormal()
-- float Random(float min, float max)
 - float Random()
 - float Random(float range)
+- float Random(float min, float max)
 - int RandomInt(int range)
 - int RandomInt(int min, int max)
 - float RandomNormal(float meanValue, float variance)
@@ -8828,9 +8839,9 @@ Properties:
 - float Sin(float angle)
 - float SmoothStep(float lhs, float rhs, float t)
 - float Sqrt(float x)
-- float StableRandom(const Vector3& seed)
 - float StableRandom(const Vector2& seed)
 - float StableRandom(float seed)
+- float StableRandom(const Vector3& seed)
 - void SubscribeToEvent(void* sender, const String eventName, void* functionOrFunctionName)
 - void SubscribeToEvent(const String eventName, void* functionOrFunctionName)
 - float Tan(float angle)
@@ -8858,37 +8869,37 @@ Properties:
 - Vector4 ToVector4(const String source, bool allowMissingCoords = false)
 - void UnsubscribeFromAllEvents()
 - void UnsubscribeFromAllEventsExcept(const Vector<String>& exceptionNames)
-- void UnsubscribeFromEvent(Object* sender, const String eventName)
 - void UnsubscribeFromEvent(const String eventName)
+- void UnsubscribeFromEvent(Object* sender, const String eventName)
 - void UnsubscribeFromEvents(Object* sender)
 - Vector2 VectorCeil(const Vector2& vec)
-- Vector4 VectorCeil(const Vector4& vec)
 - Vector3 VectorCeil(const Vector3& vec)
+- Vector4 VectorCeil(const Vector4& vec)
 - IntVector2 VectorCeilToInt(const Vector2& vec)
 - IntVector3 VectorCeilToInt(const Vector3& vec)
+- Vector4 VectorFloor(const Vector4& vec)
 - Vector3 VectorFloor(const Vector3& vec)
 - Vector2 VectorFloor(const Vector2& vec)
-- Vector4 VectorFloor(const Vector4& vec)
-- IntVector2 VectorFloorToInt(const Vector2& vec)
 - IntVector3 VectorFloorToInt(const Vector3& vec)
+- IntVector2 VectorFloorToInt(const Vector2& vec)
 - Vector2 VectorLerp(const Vector2& lhs, const Vector2& rhs, const Vector2& t)
-- Vector4 VectorLerp(const Vector4& lhs, const Vector4& rhs, const Vector4& t)
 - Vector3 VectorLerp(const Vector3& lhs, const Vector3& rhs, const Vector3& t)
-- Vector3 VectorMax(const Vector3& lhs, const Vector3& rhs)
+- Vector4 VectorLerp(const Vector4& lhs, const Vector4& rhs, const Vector4& t)
 - Vector4 VectorMax(const Vector4& lhs, const Vector4& rhs)
-- IntVector2 VectorMax(const IntVector2& lhs, const IntVector2& rhs)
 - IntVector3 VectorMax(const IntVector3& lhs, const IntVector3& rhs)
+- IntVector2 VectorMax(const IntVector2& lhs, const IntVector2& rhs)
 - Vector2 VectorMax(const Vector2& lhs, const Vector2& rhs)
+- Vector3 VectorMax(const Vector3& lhs, const Vector3& rhs)
+- Vector4 VectorMin(const Vector4& lhs, const Vector4& rhs)
+- Vector2 VectorMin(const Vector2& lhs, const Vector2& rhs)
+- IntVector2 VectorMin(const IntVector2& lhs, const IntVector2& rhs)
 - Vector3 VectorMin(const Vector3& lhs, const Vector3& rhs)
 - IntVector3 VectorMin(const IntVector3& lhs, const IntVector3& rhs)
-- Vector2 VectorMin(const Vector2& lhs, const Vector2& rhs)
-- Vector4 VectorMin(const Vector4& lhs, const Vector4& rhs)
-- IntVector2 VectorMin(const IntVector2& lhs, const IntVector2& rhs)
 - Vector2 VectorRound(const Vector2& vec)
-- Vector4 VectorRound(const Vector4& vec)
 - Vector3 VectorRound(const Vector3& vec)
-- IntVector3 VectorRoundToInt(const Vector3& vec)
+- Vector4 VectorRound(const Vector4& vec)
 - IntVector2 VectorRoundToInt(const Vector2& vec)
+- IntVector3 VectorRoundToInt(const Vector3& vec)
 
 
 \section LuaScriptAPI_GlobalProperties Global properties
